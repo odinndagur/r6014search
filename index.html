@@ -11,12 +11,12 @@
 
   <div class="container">
     <div id="heading">shows</div>
+    <div id="video-search">
+      <input type="text" oninput="updateSearch(this)" onsubmit="updateSearch(this)">
+    </div>
 
     <div class="videos"></div>
 
-    <div id="video-search">
-      <input type="text" oninput="updateSearch(this)">
-    </div>
 
   </div>
 
@@ -35,8 +35,8 @@
 
   .container {
     /* background-color: #aaa; */
-    width: 380px;
-    height: 800px;
+    min-width: 380px;
+    /* height: 800px; */
     margin: auto;
     margin-top: 3rem;
     border-radius: 25px;
@@ -47,28 +47,38 @@
     overflow-x: hidden;
     padding: 2rem;
     max-height: 600px;
-    /* max-width: 30%; */
+    margin: auto;
+    max-width: 80%;
+
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+
+  .videos::-webkit-scrollbar {
+    display: none;
   }
 
   .video {
     font-family: 'Optima';
-    max-height: 200px;
-    display: flex;
-    align-items: center;
+    /* max-height: 200px; */
+    max-width: 500px;
+    display: inline-block;
+    margin: auto;
+    /* align-items:flex-start; */
     padding: 0.5rem;
   }
 
-  .video>img {
+  .video>a>img {
     max-width: 25%;
-    display: inline-block;
-    padding:0.2rem;
+    /* display: inline-block;
+    padding:0.2rem; */
     /* float: left; */
   }
 
   .video>.video-text {
-    /* float:right; */
     display: inline-block;
     text-align: left;
+    padding-bottom: 1rem;
     color: #000;
   }
 
@@ -82,7 +92,8 @@
 
   #heading {
     text-align: center;
-    color: rgba(255,255,255,0.9);
+    /* color: rgba(255,255,255,0.9); */
+    color:#000;
     font-family: 'Faustina';
     font-size: 30pt;
     font-style: italic;
@@ -90,31 +101,22 @@
   }
 
   #video-search {
-    position: absolute;
-    bottom: 4rem;
+    /* position: absolute;
+    bottom: 4rem; */
     width: 80%;
     margin: auto;
     text-align: center;
+    padding-bottom: 1rem;
   }
 
   #video-search input {
     border-radius: 1rem;
     width: 80%;
     height: 1.5rem;
+    padding: 0.5rem;
 
   }
 </style>
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -122,38 +124,10 @@
   import { load } from "./dist/sql-httpvfs.js";
   window.loadDB = load
 
-  window.loadDB('r6014-fts.sqlite3').then(db => {
+  window.loadDB('/r6014/r6014-fts.sqlite3').then(db => {
     window.db = db.db
   })
 </script>
 
-<script async defer>
-  async function getData(){
-    data = await window.db.query('select name from person')
-    console.log(data)
-  }
-
-  async function updateSearch(inp){
-    videos = await window.db.query(`select * from video_search where video_search match "${inp.value}" order by rank, date`)
-    videoEl = document.querySelector('.videos')
-    videoEl.innerHTML = ''
-    for(let video of videos){
-      let el = document.createElement('div')
-      el.classList.add('video')
-      el.innerHTML = `
-      <img src="${video.thumbnail}"/>
-      <div class="video-text">
-        <span class="video-band">${video.band}</span>
-        <br/>
-        <span class="video-venue">${video.venue_name}</span>
-        <br/>
-        <span class="video-date">${video.date}</span>
-      </div>
-      `
-      videoEl.appendChild(el)
-    }
-
-  }
-
-</script>
+<script async defer src="main.js"></script>
 </html>
